@@ -2,37 +2,41 @@ import json
 import os
 
 saldo = 0
+riwayat = []
 FILE_DATA = "data.json"
 
 def simpan_data():
-    global saldo
-    data = {"saldo": saldo}
+    global saldo, riwayat
+    data = {"saldo": saldo, "riwayat": riwayat}
     with open(FILE_DATA, "w") as file:
         json.dump(data, file)
 
 def muat_data():
-    global saldo
+    global saldo, riwayat
     if os.path.exists(FILE_DATA):
         with open(FILE_DATA, "r") as file:
             data = json.load(file)
             saldo = data.get("saldo", 0)
-        return saldo
-    return 0
+            riwayat = data.get("riwayat", [])
+        return saldo, riwayat
+    return 0, []
 
 def tambah_pemasukan():
-    global saldo
+    global saldo, riwayat
     jumlah = int(input("Masukkan jumlah pemasukan: "))
     saldo = saldo + jumlah
+    riwayat.append({"tipe": "Pemasukan", "jumlah": jumlah})
     simpan_data()
     print(f"Pemasukan sebesar {jumlah} berhasil ditambahkan!")
 
 def tambah_pengeluaran():
-    global saldo
+    global saldo, riwayat
     jumlah = int(input("Masukkan jumlah pengeluaran: "))
     if jumlah > saldo:
         print("Saldo tidak cukup!")
     else:
         saldo = saldo - jumlah
+        riwayat.append({"tipe": "Pengeluaran", "jumlah": jumlah})
         simpan_data()
         print(f"Pengeluaran sebesar {jumlah} berhasil dicatat!")
 
@@ -43,14 +47,37 @@ def lihat_saldo():
     print(f"{'Saldo':<20} | Rp. {saldo:>10,}".replace(",", "."))
     print("="*40 + "\n")
 
+def lihat_tabel_lengkap():
+    print("\n" + "="*60)
+    print("TABEL LENGKAP TRANSAKSI".center(60))
+    print("="*60)
+    print(f"{'No':<5} | {'Tipe':<15} | {'Jumlah':<15} | {'Saldo Sisa':<15}")
+    print("-"*60)
+    
+    total_saldo = 0
+    for i, transaksi in enumerate(riwayat, 1):
+        tipe = transaksi["tipe"]
+        jumlah = transaksi["jumlah"]
+        if tipe == "Pemasukan":
+            total_saldo += jumlah
+        else:
+            total_saldo -= jumlah
+        
+        print(f"{i:<5} | {tipe:<15} | Rp. {jumlah:>8,} | Rp. {total_saldo:>8,}".replace(",", "."))
+    
+    print("-"*60)
+    print(f"{'TOTAL SALDO AKHIR':<23} | Rp. {saldo:>8,}".replace(",", "."))
+    print("="*60 + "\n")
+
 def menu():
     print("=== Aplikasi Pengelola Uang Saku ===")
     print("1. Tambah pemasukan")
     print("2. Tambah pengeluaran")
     print("3. Lihat saldo")
-    print("4. Keluar")
+    print("4. Lihat tabel lengkap")
+    print("5. Keluar")
 
-saldo = muat_data()
+saldo, riwayat = muat_data()
 
 while True:
     menu()
@@ -63,6 +90,8 @@ while True:
     elif pilihan == "3":
         lihat_saldo()
     elif pilihan == "4":
+        lihat_tabel_lengkap()
+    elif pilihan == "5":
         print("Terima kasih!")
         break
     else:
