@@ -48,12 +48,19 @@ def lihat_saldo():
     print("="*40 + "\n")
 
 def lihat_tabel_lengkap():
-    print("\n" + "="*60)
-    print("TABEL LENGKAP TRANSAKSI".center(60))
-    print("="*60)
-    print(f"{'No':<5} | {'Tipe':<15} | {'Jumlah':<15} | {'Saldo Sisa':<15}")
-    print("-"*60)
-    
+    print("\n" + "="*66)
+    print("TABEL LENGKAP TRANSAKSI".center(66))
+    print("="*66)
+    print(f"{'No':<5} | {'Tipe':<18} | {'Jumlah':>15} | {'Saldo Sisa':>15}")
+    print("-"*66)
+
+    if not riwayat:
+        print("Tidak ada transaksi.".center(66))
+        print("-"*66)
+        print(f"{'':<5} | {'':<18} | {'SALDO SISA':<15} | Rp. {saldo:>10,}".replace(",", "."))
+        print("="*66 + "\n")
+        return
+
     total_saldo = 0
     for i, transaksi in enumerate(riwayat, 1):
         tipe = transaksi["tipe"]
@@ -62,12 +69,13 @@ def lihat_tabel_lengkap():
             total_saldo += jumlah
         else:
             total_saldo -= jumlah
-        
-        print(f"{i:<5} | {tipe:<15} | Rp. {jumlah:>8,} | Rp. {total_saldo:>8,}".replace(",", "."))
-    
-    print("-"*60)
-    print(f"{'TOTAL SALDO AKHIR':<23} | Rp. {saldo:>8,}".replace(",", "."))
-    print("="*60 + "\n")
+
+        print(f"{i:<5} | {tipe:<18} | Rp. {jumlah:>12,} | Rp. {total_saldo:>12,}".replace(",", "."))
+
+    print("-"*66)
+    # Pastikan total saldo akhir sama dengan saldo sisa (running total)
+    print(f"{'':<5} | {'TOTAL':<18} | {'':>15} | Rp. {total_saldo:>12,}".replace(",", "."))
+    print("="*66 + "\n")
 
 def menu():
     print("=== Aplikasi Pengelola Uang Saku ===")

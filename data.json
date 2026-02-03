@@ -1,1 +1,1 @@
-{"saldo": 50000}
+{"saldo": 150000, "riwayat": [{"tipe": "Pemasukan", "jumlah": 50000}, {"tipe": "Pengeluaran", "jumlah": 20000}, {"tipe": "Pemasukan", "jumlah": 100000}, {"tipe": "Pengeluaran", "jumlah": 30000}]}
